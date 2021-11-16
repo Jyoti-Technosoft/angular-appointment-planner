@@ -28,6 +28,8 @@ import { PatientsComponent } from './patients/patients.component';
 import { RecentActivityComponent } from './recent-activity/recent-activity.component';
 import { PreferenceComponent } from './preference/preference.component';
 import { MainComponent } from './main/main.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { MainComponent } from './main/main.component';
     ScheduleModule,
     RecurrenceEditorModule,
     DropDownListModule,
+    HttpClientModule,
     MultiSelectModule,
     ComboBoxModule,
     CheckBoxModule,

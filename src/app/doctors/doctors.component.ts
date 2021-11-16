@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DropDownListComponent } from '@syncfusion/ej2-angular-dropdowns';
 import { AddEditDoctorComponent } from '../add-edit-doctor/add-edit-doctor.component';
 import { DataService } from '../data.service';
+import { ApiserviceService } from '../apiservice.service';
 import { Tooltip, TooltipEventArgs } from '@syncfusion/ej2-angular-popups';
 
 @Component({
@@ -24,8 +25,9 @@ export class DoctorsComponent implements OnInit {
   public selectedDepartmentId: string;
   public tooltipObj: Tooltip;
 
-  constructor(public dataService: DataService, private router: Router) {
-    this.doctorsData = this.filteredDoctors = this.dataService.getDoctorsData();
+  constructor(public dataService: DataService, private router: Router,private ApiserviceService:ApiserviceService) {
+    this.doctorsData = this.filteredDoctors = this.ApiserviceService.getDoctorList();
+    this.doctorsData = this.filteredDoctors = Object.values(this.doctorsData['providers']);
     this.activeDoctorData = this.doctorsData[0];
     this.specializationData = this.dataService.specialistData;
   }

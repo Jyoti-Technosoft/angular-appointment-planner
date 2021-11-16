@@ -6,6 +6,7 @@ import { Button } from '@syncfusion/ej2-angular-buttons';
 import { EditService, PageService, EditSettingsModel, GridComponent, DialogEditEventArgs } from '@syncfusion/ej2-angular-grids';
 import { AddEditPatientComponent } from '../add-edit-patient/add-edit-patient.component';
 import { DataService } from '../data.service';
+import { ApiserviceService } from '../apiservice.service';
 
 @Component({
   selector: 'app-patients',
@@ -29,11 +30,13 @@ export class PatientsComponent implements OnInit {
   public gridDialog: Dialog;
   public animationSettings: Record<string, any> = { effect: 'None' };
 
-  constructor(public dataService: DataService) {
-    this.patientsData = this.filteredPatients = this.dataService.getPatientsData();
+  constructor(public dataService: DataService, public apiserviceService: ApiserviceService) {
+    this.patientsData = this.filteredPatients = this.apiserviceService.getWaitingList()
+
     this.hospitalData = this.dataService.getHospitalData();
     this.doctorsData = this.dataService.getDoctorsData();
-    this.activePatientData = this.filteredPatients[0];
+    this.activePatientData = Object.values(this.filteredPatients['waitingList']);
+    console.log("activePatientData",this.activePatientData);
     this.editSettings = {
       allowEditing: true,
       allowAdding: true,
@@ -167,7 +170,7 @@ export class PatientsComponent implements OnInit {
   }
 
   public gridRefresh(): void {
-    this.patientsData = this.dataService.getPatientsData();
+    this.patientsData = this.apiserviceService.getWaitingList();
     this.filteredPatients = this.patientsData;
     this.gridObj.refresh();
   }

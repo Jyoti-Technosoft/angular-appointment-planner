@@ -9,7 +9,7 @@ import { AboutComponent } from './about/about.component';
 import { DoctorDetailsComponent } from './doctor-details/doctor-details.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent },
   { path: 'calendar', component: CalendarComponent },
   { path: 'doctors', component: DoctorsComponent },
