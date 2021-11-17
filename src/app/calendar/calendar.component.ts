@@ -90,7 +90,7 @@ export class CalendarComponent implements OnInit {
   public workDays: Array<number> = [0, 1, 2, 3, 4, 5, 6];
   public workHours: WorkHoursModel = { start: '08:00', end: '21:00' };
   public animationSettings: Record<string, any> = { effect: 'None' };
-  public waitingList: Record<string, any>[];
+  public waitingList: any = [];
   public activeWaitingItem: Record<string, any>[] = [];
   public selectedWaitingItem: Record<string, any>[] = [];
   public comboBox: ComboBox;

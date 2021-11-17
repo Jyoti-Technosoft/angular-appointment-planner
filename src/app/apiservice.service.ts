@@ -44,8 +44,8 @@ export class ApiserviceService {
 
   getWaitingList(){
     this.getWaiting().subscribe(data => {
-      console.log(data);
-      this.waitingList = data;
+      console.log("data==>>", data);
+      this.waitingList = data
     });
     return this.waitingList;
   }

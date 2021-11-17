@@ -30,7 +30,6 @@ import { PreferenceComponent } from './preference/preference.component';
 import { MainComponent } from './main/main.component';
 import { HttpClientModule } from '@angular/common/http';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +50,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     ScheduleModule,
+    HttpClientModule,
     RecurrenceEditorModule,
     DropDownListModule,
     HttpClientModule,
