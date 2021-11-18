@@ -32,7 +32,6 @@ export class ApiserviceService {
 
   getDoctorList(){
     this.getDoctor().subscribe(data => {
-      console.log(data);
       this.doctorList = data;
     });
     return this.doctorList;
@@ -43,9 +42,11 @@ export class ApiserviceService {
   }
 
   getWaitingList(){
-    this.getWaiting().subscribe(data => {
+    this.waitingList = this.getWaiting().subscribe(data => {
       console.log("data==>>", data);
-      this.waitingList = data
+      this.waitingList = data['waitingList'];
+      console.log(data['waitingList'])
+      return this.waitingList;
     });
     return this.waitingList;
   }

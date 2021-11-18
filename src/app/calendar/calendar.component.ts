@@ -108,10 +108,6 @@ export class CalendarComponent implements OnInit {
   constructor(public dataService: DataService, public apiserviceService:ApiserviceService, public activatedRoute: ActivatedRoute, public router:Router) {
     (QuickPopups.prototype as any).applyFormValidation = () => { };
     (FieldValidator.prototype as any).errorPlacement = this.dataService.errorPlacement;
-    this.getListOfWaiting = this.apiserviceService.getWaitingList();
-    Object.values(this.getListOfWaiting['waitingList']);
-    console.log(Object.values(this.getListOfWaiting['waitingList']))
-    this.activeWaitingList = this.getListOfWaiting['waitingList']
   }
 
   public minValidation: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => args.value.length >= 5;
@@ -119,6 +115,15 @@ export class CalendarComponent implements OnInit {
     this.patientsData.filter((item: Record<string, any>) => item.Name === args.value).length > 0;
   
   public ngOnInit(): void {
+    this.getListOfWaiting = this.fetchDataAsPromise()
+    .then((): void => {
+      this.activeWaitingList = this.getListOfWaiting['waitingList'];
+      console.log(this.getListOfWaiting['waitingList']);
+      return this.getListOfWaiting;
+    })
+    .catch((error) => {
+      console.log("Promise rejected with " + JSON.stringify(error));
+    });
     this.listData = this.apiserviceService.getList();
     this.dataRecord = Object.values(this.listData['appointmentsByDate']);
     this.scheduleData = this.dataRecord[0];
@@ -181,6 +186,10 @@ export class CalendarComponent implements OnInit {
       this.toastWidth = '300px';
       addClass([this.dropdownObj.element], 'e-specialist-hide');
     }
+  }
+
+  fetchDataAsPromise() {
+    return this.apiserviceService.getWaitingList();
   }
 
   public onActionBegin(args: ActionEventArgs): void {
