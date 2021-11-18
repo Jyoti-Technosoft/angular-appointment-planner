@@ -26,13 +26,19 @@ export class DoctorsComponent implements OnInit {
   public tooltipObj: Tooltip;
 
   constructor(public dataService: DataService, private router: Router,private ApiserviceService:ApiserviceService) {
-    this.doctorsData = this.filteredDoctors = this.ApiserviceService.getDoctorList();
-    this.doctorsData = this.filteredDoctors = Object.values(this.doctorsData['providers']);
-    this.activeDoctorData = this.doctorsData[0];
-    this.specializationData = this.dataService.specialistData;
+    // this.doctorsData = this.filteredDoctors = this.ApiserviceService.getDoctorList();
+    // this.doctorsData = this.filteredDoctors = Object.values(this.doctorsData['providers']);
+    // this.activeDoctorData = this.doctorsData[0];
+    // this.specializationData = this.dataService.specialistData;
   }
 
   public ngOnInit(): void {
+    this.ApiserviceService.doctorList$.subscribe(data => {
+      this.doctorsData = this.filteredDoctors = data;
+      this.doctorsData = this.filteredDoctors = Object.values(this.doctorsData['providers']);
+      this.activeDoctorData = this.doctorsData[0];
+      this.specializationData = this.dataService.specialistData;
+    });
     this.dataService.updateActiveItem('doctors');
     this.tooltipObj = new Tooltip({
       height: '30px',

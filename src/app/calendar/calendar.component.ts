@@ -24,6 +24,7 @@ import { CalendarSettings } from '../calendar-settings';
 import { DataService } from '../data.service';
 import { ApiserviceService } from '../apiservice.service'
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 L10n.load({
   'en-US': {
@@ -115,62 +116,73 @@ export class CalendarComponent implements OnInit {
     this.patientsData.filter((item: Record<string, any>) => item.Name === args.value).length > 0;
   
   public ngOnInit(): void {
-    this.getListOfWaiting = this.fetchDataAsPromise()
-    .then((): void => {
-      this.activeWaitingList = this.getListOfWaiting['waitingList'];
-      console.log(this.getListOfWaiting['waitingList']);
-      return this.getListOfWaiting;
+
+    this.apiserviceService.getDoctorList();
+    this.apiserviceService.getAppointmentList();
+    this.apiserviceService.getWaitingList();
+    this.apiserviceService.doctorList$.subscribe(data => {
+      console.log("Doctors data ", data);
+
+      if(data) {
+        this.doctorsData = Object.values(data['providers']);
+        this.specialistData = this.doctorsData;
+      }
+      
     })
-    .catch((error) => {
-      console.log("Promise rejected with " + JSON.stringify(error));
+    this.apiserviceService.appointmentList$.subscribe(data => {
+      this.listData = data;
+      console.log(" Data Value ", data);
+      console.log("list data ", this.listData);
+
+      this.dataRecord = Object.values(this.listData['appointmentsByDate']);
+      this.scheduleData = this.dataRecord[0];
+      this.calendarSettings = this.dataService.getCalendarSettings();
+      for(let i = 0; i <this.dataRecord[0].length; i++) {
+        const dateString = this.dataRecord[0][i].date;
+        const year = dateString.substr(0, 4);
+        const intYear = +year;
+        const month = dateString.substr(5, 2);
+        const intMonth = +month;
+        const day = dateString.substr(8, 2);
+        const intDay = +day;
+        const timeString = this.dataRecord[0][i].time;
+        const hour = timeString.substr(0,2);
+        const intHour = +hour;
+        const min = timeString.substr(6,2);
+        const intMin = +min;
+        const date = new Date(year, month, day);
+        let duration: number = this.dataRecord[0][i].duration | 0; 
+        const startTime = new Date(intYear, intMonth, intDay, intHour, intMin);
+        this.dataRecord[0][i].StartTime = startTime; 
+        this.dataRecord[0][i].EndTime = new Date(startTime.getTime() + (duration * 60 * 1000)); 
+        console.log(this.dataRecord[0][i]);
+      }
+      this.eventData = this.hospitalData = Object.values(this.dataRecord[0])
+      this.eventSettings = {
+        dataSource: this.eventData,
+        query: new Query(),
+        fields: {
+          id: 'id',
+          description: { name: 'appointmentTypeId' },
+          startTime: { name: 'StartTime' },
+          endTime: { name: 'EndTime' },
+
+      },
+        resourceColorField: this.calendarSettings.bookingColor
+      };
+      this.dataService.updateActiveItem('calendar');
+      this.patientsData = this.dataService.patientsData;
+      this.specialistCategory = this.dataService.specialistData;
+
     });
-    this.listData = this.apiserviceService.getList();
-    this.dataRecord = Object.values(this.listData['appointmentsByDate']);
-    this.scheduleData = this.dataRecord[0];
-    this.calendarSettings = this.dataService.getCalendarSettings();
-    for(let i = 0; i <this.dataRecord[0].length; i++) {
-      const dateString = this.dataRecord[0][i].date;
-      const year = dateString.substr(0, 4);
-      const intYear = +year;
-      const month = dateString.substr(5, 2);
-      const intMonth = +month;
-      const day = dateString.substr(8, 2);
-      const intDay = +day;
-      const timeString = this.dataRecord[0][i].time;
-      const hour = timeString.substr(0,2);
-      const intHour = +hour;
-      const min = timeString.substr(6,2);
-      const intMin = +min;
-      const date = new Date(year, month, day);
-      let duration: number = this.dataRecord[0][i].duration | 0; 
-      const startTime = new Date(intYear, intMonth, intDay, intHour, intMin);
-      this.dataRecord[0][i].StartTime = startTime; 
-      this.dataRecord[0][i].EndTime = new Date(startTime.getTime() + (duration * 60 * 1000)); 
-      console.log(this.dataRecord[0][i]);
-    }
-    this.eventData = this.hospitalData = Object.values(this.dataRecord[0])
-    this.eventSettings = {
-      dataSource: this.eventData,
-      query: new Query(),
-      fields: {
-        id: 'id',
-        description: { name: 'appointmentTypeId' },
-        startTime: { name: 'StartTime' },
-        endTime: { name: 'EndTime' },
-
-    },
-      resourceColorField: this.calendarSettings.bookingColor
-    };
-
-    this.dataService.updateActiveItem('calendar');
-    this.patientsData = this.dataService.patientsData;
-    this.specialistCategory = this.dataService.specialistData;
+    
+    this.apiserviceService.waitingList$.subscribe(data =>{
+      if(data){
+        this.field.dataSource = this.waitingList = data["waitingList"];
+      }
+    })
+    
     this.activeDoctorData = [];
-    this.doctorsData = this.apiserviceService.getDoctorList();
-    this.doctorsData = Object.values(this.doctorsData['providers']);
-    this.specialistData = this.doctorsData;
-    this.resourceDataSource = this.dataService.getDoctorsData();
-    this.field.dataSource = this.waitingList = this.apiserviceService.getWaitingList();
     this.activeWaitingItem = this.activeWaitingList;
     this.startHour = this.calendarSettings.calendar.start as string;
     this.endHour = this.calendarSettings.calendar.end as string;
@@ -186,10 +198,6 @@ export class CalendarComponent implements OnInit {
       this.toastWidth = '300px';
       addClass([this.dropdownObj.element], 'e-specialist-hide');
     }
-  }
-
-  fetchDataAsPromise() {
-    return this.apiserviceService.getWaitingList();
   }
 
   public onActionBegin(args: ActionEventArgs): void {
@@ -418,8 +426,8 @@ export class CalendarComponent implements OnInit {
   public onDoctorSelect(args: Record<string, any>): void {
     if (args.value) {
       this.refreshDataSource(args.itemData.DepartmentId, args.itemData.Id);
-      this.field.dataSource = this.apiserviceService.getWaitingList;
-      this.treeObj.fields.dataSource = this.apiserviceService.getWaitingList();
+      this.field.dataSource = this.waitingList;
+      this.treeObj.fields.dataSource = this.waitingList;
     } else {
       this.setDefaultData();
     }
@@ -676,9 +684,9 @@ export class CalendarComponent implements OnInit {
   }
 
   public refreshWaitingItems(id: number): void {
-    this.waitingList = this.apiserviceService.getWaitingList();
+    this.waitingList = this.waitingList;
     this.dataService.setWaitingList(this.waitingList);
-    this.activeWaitingItem = this.apiserviceService.getWaitingList();
+    this.activeWaitingItem = this.waitingList;
     console.log(this.activeWaitingList);
   }
 

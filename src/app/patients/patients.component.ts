@@ -31,22 +31,26 @@ export class PatientsComponent implements OnInit {
   public animationSettings: Record<string, any> = { effect: 'None' };
 
   constructor(public dataService: DataService, public apiserviceService: ApiserviceService) {
-    this.patientsData = this.filteredPatients = this.apiserviceService.getWaitingList()
+    this.apiserviceService.getWaitingList()
 
-    this.hospitalData = this.dataService.getHospitalData();
-    this.doctorsData = this.dataService.getDoctorsData();
-    this.activePatientData = Object.values(this.filteredPatients['waitingList']);
-    console.log("activePatientData",this.activePatientData);
-    this.editSettings = {
-      allowEditing: true,
-      allowAdding: true,
-      allowDeleting: true,
-      mode: 'Dialog'
-    };
+    
   }
 
   public ngOnInit(): void {
-    this.dataService.updateActiveItem('patients');
+    // this.dataService.updateActiveItem('patients');
+    this.apiserviceService.waitingList$.subscribe(data => {
+      this.patientsData = this.filteredPatients = data;
+      this.hospitalData = this.dataService.getHospitalData();
+      this.doctorsData = this.dataService.getDoctorsData();
+      this.activePatientData = Object.values(this.filteredPatients['waitingList']);
+      console.log("activePatientData",this.activePatientData);
+      this.editSettings = {
+        allowEditing: true,
+        allowAdding: true,
+        allowDeleting: true,
+        mode: 'Dialog'
+      };
+    })
   }
 
   public onPatientClick(args: MouseEvent): void {
@@ -170,8 +174,8 @@ export class PatientsComponent implements OnInit {
   }
 
   public gridRefresh(): void {
-    this.patientsData = this.apiserviceService.getWaitingList();
-    this.filteredPatients = this.patientsData;
+    // this.patientsData = this.apiserviceService.getWaitingList();
+    // this.filteredPatients = this.patientsData;
     this.gridObj.refresh();
   }
 }
