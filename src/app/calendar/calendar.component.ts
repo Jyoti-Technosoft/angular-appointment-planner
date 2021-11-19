@@ -387,20 +387,10 @@ export class CalendarComponent implements OnInit {
   }
 
   public getPatientName(data: Record<string, any>): string {
-    console.log("data==>>", data);
-    // console.log("this.patientsData", this.patientsData[0]);
-    // const temp = this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId);
-    // console.log("temp==>", temp);
-    // return this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId)[0]?.Name.toString();
     return data.elementType;
   }
 
   public getDoctorName(data: Record<string, any>): string {
-    // if (!isNullOrUndefined(data.DoctorId)) {
-    //   return 'Dr. ' + this.doctorsData.filter((item: Record<string, any>) => item.id === data.DoctorId)[0].Name.toString();
-    // } else {
-    //   return this.specialistCategory.filter((item: Record<string, any>) => item.id === data.providerId)[0].Text.toString();
-    // }
     return data.description 
   }
 
