@@ -181,6 +181,18 @@ export class CalendarComponent implements OnInit {
     
     this.activeDoctorData = [];
     this.activeWaitingItem = this.activeWaitingList;
+    if(this.calendarSettings == undefined){
+      this.calendarSettings = {
+        bookingColor: 'Doctors',
+        calendar: {
+          start: '08:00',
+          end: '21:00'
+        },
+        currentView: 'Week',
+        interval: 60,
+        firstDayOfWeek: 0
+      }
+    }
     this.startHour = this.calendarSettings.calendar.start as string;
     this.endHour = this.calendarSettings.calendar.end as string;
     this.timeScale.interval = this.calendarSettings.interval;
