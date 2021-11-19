@@ -22,6 +22,6 @@ ng serve
 
 ## Demo
 
-### <a href="https://ej2.syncfusion.com/showcase/angular/appointmentplanner/" target="_blank">https://ej2.syncfusion.com/showcase/angular/appointmentplanner/</a>
+### <a href="https://angular-appointment-planner.herokuapp.com/" target="_blank">https://angular-appointment-planner.herokuapp.com/</a>
 
 Check all the showcase samples from <a href="https://ej2.syncfusion.com/home/angular.html" target="_blank">here</a>.
