@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -21,11 +20,6 @@ export class ApiserviceService {
 
   getAppointmentList(){
     this.appointmentList$ = this.getAppointments();
-    // this.getAppointments().subscribe(data => {
-    //   console.log(data);
-    //   this.appointmentList. = data;
-    // });
-    // return this.appointmentList;
   }
 
   getDoctor(): Observable<any[]>{
@@ -33,9 +27,6 @@ export class ApiserviceService {
   }
 
   getDoctorList(){
-    // this.getDoctor().subscribe(data => {
-    //   this.doctorList = data;
-    // });
     return this.doctorList$ = this.getDoctor();
   }
 
@@ -44,13 +35,6 @@ export class ApiserviceService {
   }
 
   getWaitingList(){
-    // this.waitingList = this.getWaiting().subscribe(data => {
-    //   console.log("data==>>", data);
-    //   this.waitingList = data['waitingList'];
-    //   console.log(data['waitingList'])
-    //   return this.waitingList;
-    // });
-    // return this.waitingList;
     this.waitingList$ = this.getWaiting();
   }
 }

@@ -122,20 +122,15 @@ export class CalendarComponent implements OnInit {
     this.apiserviceService.getAppointmentList();
     this.apiserviceService.getWaitingList();
     this.apiserviceService.doctorList$.subscribe(data => {
-      console.log("Doctors data ", data);
 
       if(data) {
         this.doctorsData = Object.values(data['providers']);
         this.specialistData = this.doctorsData;
-        console.log("doctorsData ==>", this.doctorsData);
       }
       
     })
     this.apiserviceService.appointmentList$.subscribe(data => {
-      this.listData = data;
-      console.log(" Data Value ", data);
-      console.log("list data ", this.listData);
-
+      this.listData = data;   
       this.dataRecord = Object.values(this.listData['appointmentsByDate']);
       this.scheduleData = this.dataRecord[0];
       this.calendarSettings = this.dataService.getCalendarSettings();
@@ -157,7 +152,6 @@ export class CalendarComponent implements OnInit {
         const startTime = new Date(intYear, intMonth, intDay, intHour, intMin);
         this.dataRecord[0][i].StartTime = startTime; 
         this.dataRecord[0][i].EndTime = new Date(startTime.getTime() + (duration * 60 * 1000)); 
-        console.log(this.dataRecord[0][i]);
       }
       this.eventData = this.hospitalData = Object.values(this.dataRecord[0])
       this.eventSettings = {
@@ -179,7 +173,6 @@ export class CalendarComponent implements OnInit {
     });
     
     this.apiserviceService.waitingList$.subscribe(data =>{
-      console.log("waiting list ", data);
       if(data){
         this.field.dataSource = this.waitingList = data["waitingList"];
         this.treeObj.fields.dataSource = this.waitingList as Record<string, any>[];
@@ -188,7 +181,6 @@ export class CalendarComponent implements OnInit {
     
     this.activeDoctorData = [];
     this.activeWaitingItem = this.activeWaitingList;
-    console.log(" this.calendarSettings", this.calendarSettings)
     this.startHour = this.calendarSettings.calendar.start as string;
     this.endHour = this.calendarSettings.calendar.end as string;
     this.timeScale.interval = this.calendarSettings.interval;
@@ -378,21 +370,16 @@ export class CalendarComponent implements OnInit {
   }
 
   public getEventDetails(data: Record<string, any>): string {
-    console.log("data",data);
     return (this.instance.formatDate(new Date(data.StartTime), { type: 'date', skeleton: 'long' }) +
       '(' + this.getString(new Date(data.StartTime), 'hm') + '-' + this.getString(new Date(data.EndTime), 'hm') + ')');
   }
 
   public getPatientName(data: Record<string, any>): string {
-    console.log("data==>>", data);
-    console.log("this.patientsData", this.patientsData[0]);
     const temp = this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId);
-    console.log("temp==>", temp);
     return this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId)[0]?.Name.toString();
   }
 
-  public getDoctorName(data: Record<string, any>): string {
-    console.log("data==>>", data); 
+  public getDoctorName(data: Record<string, any>): string { 
     if (!isNullOrUndefined(data.DoctorId)) {
       return 'Dr. ' + this.doctorsData.filter((item: Record<string, any>) => item.id === data.DoctorId)[0].Name.toString();
     } else {
@@ -407,7 +394,6 @@ export class CalendarComponent implements OnInit {
   public getDepartmentName(id: number): string {
     debugger;
     const temp = this.specialistCategory.filter(item => id === item.providerId)[0];
-    console.log("temp",temp);
     this.specialistCategory
     return (this.specialistCategory.filter(item => id === item. providerId)[0].Text as string).toUpperCase();
   }
@@ -434,9 +420,6 @@ export class CalendarComponent implements OnInit {
   public refreshDataSource(deptId: string, doctorId: string): void {
     const filteredItems: Record<string, any>[] = this.doctorsData.filter(item => parseInt(doctorId, 10) === item.Id);
     this.activeDoctorData = filteredItems;
-    // this.workDays = filteredItems[0].AvailableDays;
-    // this.workHours = { start: filteredItems[0].StartHour, end: filteredItems[0].EndHour };
-    // this.scheduleObj.workHours = this.workHours;
     if (filteredItems.length > 0) {
       this.updateBreakHours(this.scheduleObj.selectedDate);
       this.eventData = this.generateEvents(this.activeDoctorData[0]);
@@ -684,7 +667,6 @@ export class CalendarComponent implements OnInit {
     this.waitingList = this.waitingList;
     this.dataService.setWaitingList(this.waitingList);
     this.activeWaitingItem = this.waitingList;
-    console.log(this.activeWaitingList);
   }
 
   public updateWaitingList(deptId?: number): void {
@@ -696,7 +678,6 @@ export class CalendarComponent implements OnInit {
     this.field.dataSource = this.activeWaitingList;
     this.treeObj.fields.dataSource = this.waitingList as Record<string, any>[];
     this.treeObj.refresh();
-    console.log("this.activeWaitingList",this.activeWaitingList);
   }
 
   public updateBreakHours(currentDate: Date): void {
@@ -784,9 +765,7 @@ export class CalendarComponent implements OnInit {
     return filteredEvents;
   }
 
-  public filterWaitingEvents(): Record<string, any>[] {
-    console.log("firstDayOfWeek",this.firstDayOfWeek);    
-    console.log("currentDate",this.currentDate);    
+  public filterWaitingEvents(): Record<string, any>[] {   
     if(this.currentDate == undefined){
       this.currentDate = new Date();
     }
