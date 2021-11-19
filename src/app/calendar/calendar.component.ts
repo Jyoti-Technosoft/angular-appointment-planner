@@ -396,7 +396,6 @@ export class CalendarComponent implements OnInit {
   }
 
   public getDoctorName(data: Record<string, any>): string {
-    console.log("data==>>", data); 
     // if (!isNullOrUndefined(data.DoctorId)) {
     //   return 'Dr. ' + this.doctorsData.filter((item: Record<string, any>) => item.id === data.DoctorId)[0].Name.toString();
     // } else {
