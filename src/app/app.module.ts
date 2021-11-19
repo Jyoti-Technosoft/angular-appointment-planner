@@ -29,7 +29,7 @@ import { RecentActivityComponent } from './recent-activity/recent-activity.compo
 import { PreferenceComponent } from './preference/preference.component';
 import { MainComponent } from './main/main.component';
 import { HttpClientModule } from '@angular/common/http';
-
+import { DatePipe } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,7 +75,7 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     ToastModule
   ],
-  providers: [CalendarComponent, { provide: APP_BASE_HREF, useValue: '/' }, Location,
+  providers: [CalendarComponent, DatePipe, { provide: APP_BASE_HREF, useValue: '/' }, Location,
     { provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

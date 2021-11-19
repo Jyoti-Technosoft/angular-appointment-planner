@@ -25,7 +25,7 @@ import { DataService } from '../data.service';
 import { ApiserviceService } from '../apiservice.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-
+import { DatePipe } from '@angular/common';
 L10n.load({
   'en-US': {
     schedule: {
@@ -106,9 +106,19 @@ export class CalendarComponent implements OnInit {
   getListOfWaiting: any;
   activeWaitingList: any;
 
-  constructor(public dataService: DataService, public apiserviceService:ApiserviceService, public activatedRoute: ActivatedRoute, public router:Router) {
+  constructor(public dataService: DataService, public apiserviceService:ApiserviceService,public datepipe: DatePipe) {
     (QuickPopups.prototype as any).applyFormValidation = () => { };
     (FieldValidator.prototype as any).errorPlacement = this.dataService.errorPlacement;
+    this.calendarSettings = {
+      bookingColor: 'Doctors',
+      calendar: {
+        start: '08:00',
+        end: '21:00'
+      },
+      currentView: 'Week',
+      interval: 60,
+      firstDayOfWeek: 0
+    };
   }
 
   public minValidation: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => args.value.length >= 5;
@@ -177,6 +187,7 @@ export class CalendarComponent implements OnInit {
     });
     
     this.apiserviceService.waitingList$.subscribe(data =>{
+      console.log("waiting list ", data);
       if(data){
         this.field.dataSource = this.waitingList = data["waitingList"];
       }
@@ -184,6 +195,7 @@ export class CalendarComponent implements OnInit {
     
     this.activeDoctorData = [];
     this.activeWaitingItem = this.activeWaitingList;
+    console.log(" this.calendarSettings", this.calendarSettings)
     this.startHour = this.calendarSettings.calendar.start as string;
     this.endHour = this.calendarSettings.calendar.end as string;
     this.timeScale.interval = this.calendarSettings.interval;
@@ -395,15 +407,8 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  public getWaitingRecord(id:any){
-    this.waitingList;
-    console.log("waitingList",this.waitingList);
-    const obj1 = Object.values(this.waitingList['waitingList']);
-    console.log(Object.values(this.waitingList['waitingList']));
-    const obj2 = obj1[0];
-    console.log(obj2);
-    console.log()
-    return obj2['patientName'];
+  public getWaitingRecord(data:any){
+    return data;
   }
 
   public getDepartmentName(id: number): string {
@@ -539,9 +544,8 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  public getEventTime(data: Record<string, any>): string {
-    return (this.getString(new Date(data.StartTime), 'MMMd') + ',' + this.getString(new Date(data.StartTime), 'hm') +
-      '-' + this.getString(new Date(data.EndTime), 'hm'));
+  public getEventTime(data: any): string {
+    return data.createdDateTime;
   }
 
   public getString(value: Date, type: string): string {
@@ -695,8 +699,8 @@ export class CalendarComponent implements OnInit {
     if (deptId) {
       filteredData = filteredData.filter((item: Record<string, any>) => item.DepartmentId === deptId);
     }
-    this.activeWaitingItem = this.activeWaitingList;
-    this.field.dataSource = this.activeWaitingItem;
+    this.activeWaitingItem = this.waitingList;
+    this.field.dataSource = this.activeWaitingList;
     this.treeObj.fields.dataSource = this.activeWaitingItem as Record<string, any>[];
     this.treeObj.refresh();
     console.log("this.activeWaitingList",this.activeWaitingList);
@@ -788,7 +792,12 @@ export class CalendarComponent implements OnInit {
   }
 
   public filterWaitingEvents(): Record<string, any>[] {
-    const firstDayOfWeek: Date = getWeekFirstDate(this.currentDate, this.firstDayOfWeek as number);
+    console.log("firstDayOfWeek",this.firstDayOfWeek);    
+    console.log("currentDate",this.currentDate);    
+    if(this.currentDate == undefined){
+      this.currentDate = new Date();
+    }
+    const firstDayOfWeek: Date = getWeekFirstDate(this.currentDate, this.firstDayOfWeek as number); 
     return this.scheduleObj.eventBase.filterEvents(firstDayOfWeek, addDays(new Date(firstDayOfWeek.getTime()), 6), this.waitingList);
   }
 

@@ -7,14 +7,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiserviceService {
-  appointmentList$: Observable<any[]>;
-  doctorList$ : Observable<any[]>;
-  waitingList$ : Observable<any>;
+  public appointmentList$: Observable<any[]>;
+  public doctorList$ : Observable<any[]>;
+  public waitingList$ : Observable<any>;
 
   constructor(private httpService: HttpClient) {
    }
 
-
+   
   getAppointments(): Observable<any[]> {
     return this.httpService.get<any[]>('http://ec2-3-23-112-137.us-east-2.compute.amazonaws.com/appointment/findAllAppointmentsByDay?startDate=2021-01-01');
   }
