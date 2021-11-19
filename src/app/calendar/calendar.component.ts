@@ -96,6 +96,7 @@ export class CalendarComponent implements OnInit {
   public selectedWaitingItem: Record<string, any>[] = [];
   public comboBox: ComboBox;
   public fields: Record<string, any> = { text: 'Name', value: 'Id' };
+  public doctorsFields: Record<string, any> = { text: 'firstName', value: 'firstName' };
   public itemTemplate: string = '<div class="specialist-item"><img class="value" src="http://ec2-3-23-112-137.us-east-2.compute.amazonaws.com/provider/getImage?id=618c74f21f314456bf5b5cb7" alt=""/>' +
     '<div class="doctor-details"><div class="name">Dr.${firstName}</div><div class="designation">${department}</div></div></div>';
   public footerTemplate = `<div class="add-doctor"><div class="e-icon-add e-icons"></div>
@@ -109,16 +110,6 @@ export class CalendarComponent implements OnInit {
   constructor(public dataService: DataService, public apiserviceService:ApiserviceService,public datepipe: DatePipe) {
     (QuickPopups.prototype as any).applyFormValidation = () => { };
     (FieldValidator.prototype as any).errorPlacement = this.dataService.errorPlacement;
-    this.calendarSettings = {
-      bookingColor: 'Doctors',
-      calendar: {
-        start: '08:00',
-        end: '21:00'
-      },
-      currentView: 'Week',
-      interval: 60,
-      firstDayOfWeek: 0
-    };
   }
 
   public minValidation: (args: { [key: string]: string }) => boolean = (args: { [key: string]: string }) => args.value.length >= 5;
@@ -136,6 +127,7 @@ export class CalendarComponent implements OnInit {
       if(data) {
         this.doctorsData = Object.values(data['providers']);
         this.specialistData = this.doctorsData;
+        console.log("doctorsData ==>", this.doctorsData);
       }
       
     })
@@ -190,6 +182,7 @@ export class CalendarComponent implements OnInit {
       console.log("waiting list ", data);
       if(data){
         this.field.dataSource = this.waitingList = data["waitingList"];
+        this.treeObj.fields.dataSource = this.waitingList as Record<string, any>[];
       }
     })
     
@@ -441,9 +434,9 @@ export class CalendarComponent implements OnInit {
   public refreshDataSource(deptId: string, doctorId: string): void {
     const filteredItems: Record<string, any>[] = this.doctorsData.filter(item => parseInt(doctorId, 10) === item.Id);
     this.activeDoctorData = filteredItems;
-    this.workDays = filteredItems[0].AvailableDays;
-    this.workHours = { start: filteredItems[0].StartHour, end: filteredItems[0].EndHour };
-    this.scheduleObj.workHours = this.workHours;
+    // this.workDays = filteredItems[0].AvailableDays;
+    // this.workHours = { start: filteredItems[0].StartHour, end: filteredItems[0].EndHour };
+    // this.scheduleObj.workHours = this.workHours;
     if (filteredItems.length > 0) {
       this.updateBreakHours(this.scheduleObj.selectedDate);
       this.eventData = this.generateEvents(this.activeDoctorData[0]);
@@ -701,7 +694,7 @@ export class CalendarComponent implements OnInit {
     }
     this.activeWaitingItem = this.waitingList;
     this.field.dataSource = this.activeWaitingList;
-    this.treeObj.fields.dataSource = this.activeWaitingItem as Record<string, any>[];
+    this.treeObj.fields.dataSource = this.waitingList as Record<string, any>[];
     this.treeObj.refresh();
     console.log("this.activeWaitingList",this.activeWaitingList);
   }

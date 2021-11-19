@@ -73,7 +73,7 @@
         </div>
         <div class="treeview-container">
             <div class="choose-Specialist-container">
-                <ejs-dropdownlist id='specialist' cssClass="e-specialist-doctors" #dropdownObj [dataSource]='doctorsData' [fields]='fields' placeholder='Choose Specialist' popupHeight='auto' popupWidth='221px' showClearButton='true' (change)='onDoctorSelect($event)'
+                <ejs-dropdownlist id='specialist' cssClass="e-specialist-doctors" #dropdownObj [dataSource]='doctorsData' [fields]='doctorsFields' placeholder='Choose Specialist' popupHeight='auto' popupWidth='221px' showClearButton='true' (change)='onDoctorSelect($event)'
                     (open)='onMultiSelectOpen($event)' [itemTemplate]='itemTemplate' [footerTemplate]='footerTemplate'></ejs-dropdownlist>
             </div>
             <div class="add-event-container" style="display: none;">
