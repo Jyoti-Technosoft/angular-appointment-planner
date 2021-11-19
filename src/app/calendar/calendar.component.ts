@@ -130,7 +130,7 @@ export class CalendarComponent implements OnInit {
       
     })
     this.apiserviceService.appointmentList$.subscribe(data => {
-      this.listData = data;   
+      this.listData = data;
       this.dataRecord = Object.values(this.listData['appointmentsByDate']);
       this.scheduleData = this.dataRecord[0];
       this.calendarSettings = this.dataService.getCalendarSettings();
@@ -387,16 +387,22 @@ export class CalendarComponent implements OnInit {
   }
 
   public getPatientName(data: Record<string, any>): string {
-    const temp = this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId);
-    return this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId)[0]?.Name.toString();
+    console.log("data==>>", data);
+    // console.log("this.patientsData", this.patientsData[0]);
+    // const temp = this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId);
+    // console.log("temp==>", temp);
+    // return this.patientsData[0]?.filter((item: Record<string, any>) => item.id == data.patientId)[0]?.Name.toString();
+    return data.elementType;
   }
 
-  public getDoctorName(data: Record<string, any>): string { 
-    if (!isNullOrUndefined(data.DoctorId)) {
-      return 'Dr. ' + this.doctorsData.filter((item: Record<string, any>) => item.id === data.DoctorId)[0].Name.toString();
-    } else {
-      return this.specialistCategory.filter((item: Record<string, any>) => item.id === data.providerId)[0].Text.toString();
-    }
+  public getDoctorName(data: Record<string, any>): string {
+    console.log("data==>>", data); 
+    // if (!isNullOrUndefined(data.DoctorId)) {
+    //   return 'Dr. ' + this.doctorsData.filter((item: Record<string, any>) => item.id === data.DoctorId)[0].Name.toString();
+    // } else {
+    //   return this.specialistCategory.filter((item: Record<string, any>) => item.id === data.providerId)[0].Text.toString();
+    // }
+    return data.description 
   }
 
   public getWaitingRecord(data:any){
@@ -432,6 +438,9 @@ export class CalendarComponent implements OnInit {
   public refreshDataSource(deptId: string, doctorId: string): void {
     const filteredItems: Record<string, any>[] = this.doctorsData.filter(item => parseInt(doctorId, 10) === item.Id);
     this.activeDoctorData = filteredItems;
+    // this.workDays = filteredItems[0].AvailableDays;
+    // this.workHours = { start: filteredItems[0].StartHour, end: filteredItems[0].EndHour };
+    // this.scheduleObj.workHours = this.workHours;
     if (filteredItems.length > 0) {
       this.updateBreakHours(this.scheduleObj.selectedDate);
       this.eventData = this.generateEvents(this.activeDoctorData[0]);
@@ -777,7 +786,7 @@ export class CalendarComponent implements OnInit {
     return filteredEvents;
   }
 
-  public filterWaitingEvents(): Record<string, any>[] {   
+  public filterWaitingEvents(): Record<string, any>[] {
     if(this.currentDate == undefined){
       this.currentDate = new Date();
     }

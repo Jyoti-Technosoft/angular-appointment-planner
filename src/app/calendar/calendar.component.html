@@ -18,10 +18,7 @@
                     <e-view option="Day"></e-view>
                     <e-view option="Week"></e-view>
                     <e-view option="Month"></e-view>
-                    <e-view option="TimelineDay" [group]="group"></e-view>
-                    <e-view option="TimelineWeek" [group]="group"></e-view>
-                    <e-view option="TimelineWorkWeek" [group]="group"></e-view>
-                    <e-view option="TimelineMonth" [group]="group"></e-view>
+                    <e-view option="Agenda"></e-view>
                 </e-views>
                 <ng-template #dateHeaderTemplate let-data>
                     <div class="date-text">{{getDateHeaderText(data.date)}}</div>
@@ -56,15 +53,15 @@
                         <div class="event-content">
                             <div class="patient-name-wrap">
                                 <label>Patient Name</label>:
-                                <div><span>{{getPatientName(data)}}</span></div>
+                                <div><span>{{getPatientName(data) ==null? getPatientName(data) : "Jhone Doe"}}</span></div>
                             </div>
                             <div class="doctor-name-wrap">
-                                <label>{{data.DoctorId ? "Doctor Name" : "Department Name"}}</label>:
-                                <!-- <div><span>{{getDoctorName(data)}}</span></div> -->
+                                <label>{{data.DoctorId ? "Doctor Name" : "Description"}}</label>:
+                                <div><span>{{getDoctorName(data)}}</span></div>
                             </div>
                             <div class="notes-wrap">
-                                <label>Notes</label>:
-                                <div><span>{{data.Symptoms}}</span></div>
+                                <label>appointment Type</label>:
+                                <div><span>{{data.appointmentTypeId}}</span></div>
                             </div>
                         </div>
                     </div>
@@ -73,7 +70,7 @@
         </div>
         <div class="treeview-container">
             <div class="choose-Specialist-container">
-                <ejs-dropdownlist id='specialist' cssClass="e-specialist-doctors" #dropdownObj [dataSource]='doctorsData' [fields]='doctorsFields' placeholder='Choose Specialist' popupHeight='auto' popupWidth='221px' showClearButton='true' (change)='onDoctorSelect($event)'
+                <ejs-dropdownlist id='specialist' cssClass="e-specialist-doctors" #dropdownObj [dataSource]='doctorsData' [fields]='doctorsFields' placeholder='Choose Providers' popupHeight='auto' popupWidth='221px' showClearButton='true' (change)='onDoctorSelect($event)'
                     (open)='onMultiSelectOpen($event)' [itemTemplate]='itemTemplate' [footerTemplate]='footerTemplate'></ejs-dropdownlist>
             </div>
             <div class="add-event-container" style="display: none;">
